@@ -1,12 +1,3 @@
-// export const typography = {
-//   heading: {
-//     fontSize: 24,
-//     fontWeight: '600',
-//   },
-//   body: {
-//     fontSize: 16,
-//   },
-// };
 export const typography = {
   heading: {
     fontSize: 24,

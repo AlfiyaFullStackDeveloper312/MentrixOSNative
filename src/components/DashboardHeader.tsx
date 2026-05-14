@@ -28,8 +28,27 @@ const DashboardHeader = ({
 
   const userInitial = userName.charAt(0).toUpperCase();
 
+  // SAFE MODAL OPEN
+  const handleProfilePress = () => {
+    if (showLogoutModal) {
+      return;
+    }
+
+    setShowLogoutModal(true);
+  };
+
+  // SAFE LOGOUT
+  const handleLogoutPress = () => {
+    setShowLogoutModal(false);
+
+    setTimeout(() => {
+      onLogout?.();
+    }, 300);
+  };
+
   return (
     <SafeAreaView
+      testID="dashboardHeader"
       edges={['top']}
       style={{
         backgroundColor: isDark ? '#0D0D0D' : '#FFFFFF',
@@ -42,11 +61,13 @@ const DashboardHeader = ({
             borderBottomColor: isDark ? '#1F1F1F' : '#E5E5E5',
           },
         ]}>
-        {/* LEFT SECTION */}
+        {/* LEFT */}
         <View style={DashboardHeaderStyles.left}>
-          {/* MENU BUTTON */}
+          {/* MENU */}
           <TouchableOpacity
+            testID="menuButton"
             onPress={onMenuPress}
+            activeOpacity={0.7}
             style={[
               DashboardHeaderStyles.menuButton,
               {
@@ -55,6 +76,7 @@ const DashboardHeader = ({
               },
             ]}>
             <Image
+              testID="menuIcon"
               source={
                 isDark
                   ? require('../assets/menulight.png')
@@ -70,6 +92,7 @@ const DashboardHeader = ({
 
           {/* LOGO */}
           <Image
+            testID="dashboardLogo"
             source={
               isDark
                 ? require('../assets/logowhite.png')
@@ -79,15 +102,20 @@ const DashboardHeader = ({
           />
 
           {/* TITLE */}
-          <Text style={DashboardHeaderStyles.title}>
+          <Text
+            testID="dashboardHeaderTitle"
+            style={DashboardHeaderStyles.title}>
             <Text style={{color: isDark ? '#FFFFFF' : '#000000'}}>Mentrix</Text>
+
             <Text style={{color: '#007AFF'}}>OS</Text>
           </Text>
         </View>
 
         {/* PROFILE */}
         <TouchableOpacity
-          onPress={() => setShowLogoutModal(true)}
+          testID="profileButton"
+          onPress={handleProfilePress}
+          activeOpacity={0.7}
           style={[
             DashboardHeaderStyles.profileCircle,
             {
@@ -96,6 +124,7 @@ const DashboardHeader = ({
             },
           ]}>
           <Text
+            testID="profileInitial"
             style={{
               color: isDark ? '#FFFFFF' : '#163A63',
               fontWeight: '600',
@@ -109,10 +138,7 @@ const DashboardHeader = ({
       <LogoutButton
         visible={showLogoutModal}
         onCancel={() => setShowLogoutModal(false)}
-        onLogout={() => {
-          setShowLogoutModal(false);
-          onLogout?.();
-        }}
+        onLogout={handleLogoutPress}
       />
     </SafeAreaView>
   );

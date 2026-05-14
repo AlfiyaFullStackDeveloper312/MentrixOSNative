@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {View, Text, FlatList, TouchableOpacity, Image} from 'react-native';
+
 import {useNavigation, useRoute} from '@react-navigation/native';
 
 import RoleCard from '../components/RoleCard';
@@ -24,13 +25,15 @@ interface Institute {
 
 const RolesScreen = () => {
   const navigation = useNavigation<any>();
+
   const route = useRoute<any>();
 
   const institute: Institute | undefined = route.params?.institute;
+
   const institutes = route.params?.institutes;
 
-  // HEME FIX
   const isDark = useThemeStore(state => state.isDark);
+
   const colors = isDark ? darkColors : lightColors;
 
   useEffect(() => {
@@ -42,22 +45,29 @@ const RolesScreen = () => {
     if (institute.roles?.length === 1) {
       navigation.navigate('Dashboard', {
         role: institute.roles[0],
-        institute: institute,
+        institute,
       });
     }
   }, [institute, navigation]);
 
-  if (!institute || !institute.roles) return null;
+  if (!institute || !institute.roles) {
+    return null;
+  }
 
   const handleSelect = (role: Role) => {
-    navigation.navigate('Dashboard', {role, institute});
+    navigation.navigate('Dashboard', {
+      role,
+      institute,
+    });
   };
 
   const handleLogout = () => {
     navigation.replace('Login');
   };
+
   return (
     <View
+      testID="roleScreen"
       style={[
         RoleScreenStyle.container,
         {
@@ -69,31 +79,39 @@ const RolesScreen = () => {
 
       {/* CHANGE INSTITUTE */}
       <TouchableOpacity
+        testID="changeInstituteButton"
         activeOpacity={0.7}
         style={[
           RoleScreenStyle.changeBtn,
           {
             backgroundColor: isDark ? '#181818' : '#FFFFFF',
+
             borderColor: isDark ? '#2D2D2D' : '#E2E8F0',
           },
         ]}
         onPress={() =>
           navigation.navigate('InstituteList', {
-            institutes: institutes,
+            institutes,
           })
         }>
         <Image
+          testID="backArrowIcon"
           source={require('../assets/backarrow.png')}
           style={[
             RoleScreenStyle.backIcon,
-            {tintColor: isDark ? '#FFFFFF' : '#163A63'},
+            {
+              tintColor: isDark ? '#FFFFFF' : '#163A63',
+            },
           ]}
         />
 
         <Text
+          testID="changeInstituteText"
           style={[
             RoleScreenStyle.changeText,
-            {color: isDark ? '#FFFFFF' : '#163A63'},
+            {
+              color: isDark ? '#FFFFFF' : '#163A63',
+            },
           ]}>
           Change Institute
         </Text>
@@ -101,36 +119,47 @@ const RolesScreen = () => {
 
       {/* INSTITUTE CARD */}
       <View
+        testID="selectedInstituteCard"
         style={[
           RoleScreenStyle.instCard,
           {
             backgroundColor: isDark ? '#181818' : '#E0ECFF',
+
             borderColor: isDark ? '#2D2D2D' : '#B6C6E3',
           },
         ]}>
         <Image
+          testID="selectedInstituteLogo"
           source={{uri: institute.inst_logo}}
           style={RoleScreenStyle.logo}
         />
 
         <View style={{flex: 1}}>
           <Text
+            testID="selectedInstituteName"
             style={[
               RoleScreenStyle.instName,
-              {color: isDark ? '#FFFFFF' : '#163A63'},
+              {
+                color: isDark ? '#FFFFFF' : '#163A63',
+              },
             ]}>
             {institute.name}
           </Text>
 
           <View style={RoleScreenStyle.locationRow}>
             <Image
+              testID="locationIcon"
               source={require('../assets/location.png')}
               style={RoleScreenStyle.locationIcon}
             />
+
             <Text
+              testID="selectedInstituteLocation"
               style={[
                 RoleScreenStyle.location,
-                {color: isDark ? '#A1A1AA' : '#6B7280'},
+                {
+                  color: isDark ? '#A1A1AA' : '#6B7280',
+                },
               ]}>
               {institute.inst_location}
             </Text>
@@ -138,6 +167,7 @@ const RolesScreen = () => {
         </View>
 
         <Image
+          testID="verificationIcon"
           source={require('../assets/select.png')}
           style={RoleScreenStyle.verifyIcon}
         />
@@ -145,19 +175,24 @@ const RolesScreen = () => {
 
       {/* TITLE */}
       <Text
+        testID="roleTitle"
         style={[
           RoleScreenStyle.title,
-          {color: isDark ? '#FFFFFF' : '#163A63'},
+          {
+            color: isDark ? '#FFFFFF' : '#163A63',
+          },
         ]}>
         Choose Your Role
       </Text>
 
       {/* SUBTITLE */}
       <Text
+        testID="roleSubtitle"
         style={[
           RoleScreenStyle.subtitle,
           {
             color: isDark ? '#A1A1AA' : '#6B7280',
+
             lineHeight: 22,
           },
         ]}>
@@ -166,23 +201,51 @@ const RolesScreen = () => {
 
       {/* ROLE LIST */}
       <FlatList
+        testID="roleList"
         data={institute.roles}
         keyExtractor={(_, index) => index.toString()}
         showsVerticalScrollIndicator={false}
-        renderItem={({item}) => (
-          <RoleCard name={item.role_name} onPress={() => handleSelect(item)} />
+        contentContainerStyle={{
+          paddingBottom: 20,
+        }}
+        renderItem={({item, index}) => (
+          <RoleCard
+            index={index}
+            name={item.role_name}
+            onPress={() => handleSelect(item)}
+          />
         )}
+        ListEmptyComponent={
+          <Text
+            testID="emptyRoleText"
+            style={{
+              textAlign: 'center',
+              marginTop: 30,
+              color: colors.gray,
+            }}>
+            No roles available
+          </Text>
+        }
       />
 
       {/* FOOTER */}
       <Text
+        testID="footerText"
         style={[
           RoleScreenStyle.footer,
-          {color: isDark ? '#A1A1AA' : '#6B7280'},
+          {
+            color: isDark ? '#A1A1AA' : '#6B7280',
+          },
         ]}>
         Can't find your role? Contact your institute administrator or email us
-        at
-        <Text style={{color: '#2F6BFF'}}> support@schoolcoreos.com</Text>
+        at{' '}
+        <Text
+          testID="supportEmail"
+          selectable
+          accessibilityLabel="supportEmail"
+          style={{color: '#2F6BFF'}}>
+          support@schoolcoreos.com
+        </Text>
       </Text>
     </View>
   );

@@ -9,9 +9,9 @@ interface Props {
   title: string;
   description: string;
   type: 'blue' | 'green' | 'orange' | 'purple';
+  testID?: string;
 }
 
-//  Light Background Colors (UNCHANGED)
 const getLightCardStyle = (type: string) => {
   switch (type) {
     case 'blue':
@@ -27,7 +27,6 @@ const getLightCardStyle = (type: string) => {
   }
 };
 
-// Number Colors (SAME FOR BOTH THEMES)
 const getNumberColor = (type: string) => {
   switch (type) {
     case 'blue':
@@ -43,15 +42,14 @@ const getNumberColor = (type: string) => {
   }
 };
 
-const DashboardCard = ({number, title, description, type}: Props) => {
+const DashboardCard = ({number, title, description, type, testID}: Props) => {
   const isDark = useThemeStore(state => state.isDark);
 
   return (
     <View
+      testID={testID}
       style={[
         styles.card,
-
-        // Theme based background
         isDark
           ? {
               backgroundColor: '#111111',
@@ -60,18 +58,21 @@ const DashboardCard = ({number, title, description, type}: Props) => {
             }
           : getLightCardStyle(type),
       ]}>
-      {/* NUMBER */}
-      <Text style={[styles.number, {color: getNumberColor(type)}]}>
+      <Text
+        testID={`${testID}-number`}
+        style={[styles.number, {color: getNumberColor(type)}]}>
         {number}
       </Text>
 
-      {/* TITLE */}
-      <Text style={[styles.title, {color: isDark ? '#FFFFFF' : '#333333'}]}>
+      <Text
+        testID={`${testID}-title`}
+        style={[styles.title, {color: isDark ? '#FFFFFF' : '#333333'}]}>
         {title}
       </Text>
 
-      {/* DESCRIPTION */}
-      <Text style={[styles.description, {color: isDark ? '#A1A1AA' : '#555'}]}>
+      <Text
+        testID={`${testID}-description`}
+        style={[styles.description, {color: isDark ? '#A1A1AA' : '#555'}]}>
         {description}
       </Text>
     </View>
